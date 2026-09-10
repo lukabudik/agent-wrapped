@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { splitCommand, type Command } from "./args.js";
 import { scanCommand } from "./commands/scan.js";
 import { renderCommand } from "./commands/render.js";
+import { deleteCommand } from "./commands/delete.js";
 import { loginCommand } from "./commands/login.js";
 import { logoutCommand } from "./commands/logout.js";
 import { publishCommand } from "./commands/publish.js";
@@ -19,6 +20,7 @@ const HELP = `
     agent-wrapped render [options]     Render an SVG card locally
     agent-wrapped login                Sign in with GitHub (device flow)
     agent-wrapped publish [options]    Upload stats, print a README snippet
+    agent-wrapped delete [--yes]       Erase your published data from the service
     agent-wrapped logout               Forget the stored GitHub token
 
   Scan options
@@ -75,6 +77,7 @@ function scanForGlobal(argv: readonly string[], names: readonly string[]): boole
 const RUNNERS: Record<Command, (argv: readonly string[]) => Promise<void>> = {
   scan: scanCommand,
   render: renderCommand,
+  delete: deleteCommand,
   login: loginCommand,
   logout: logoutCommand,
   publish: publishCommand,

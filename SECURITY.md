@@ -40,4 +40,4 @@ Out of scope:
 
 ## Deleting your data
 
-If you have published and want it gone, `npx agent-wrapped delete` removes your snapshot and card from the service. If that command is unavailable or fails, open a normal issue asking for deletion — no advisory needed.
+Run `npx agent-wrapped delete`. It removes your snapshot, card and leaderboard entry in one call, authorised by your GitHub token, so it can only ever delete your own data. If that fails for any reason, [open a data-deletion issue](https://github.com/lukabudik/agent-wrapped/issues/new?labels=data-deletion&title=Data+deletion+request) — a normal request, not a vulnerability.

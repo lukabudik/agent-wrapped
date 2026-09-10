@@ -36,6 +36,7 @@ Status legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] `/u/[username]` — full profile
 - [x] `/leaderboard` — ranked table
 - [x] Rate limiting on publish
+- [x] `DELETE /api/account` + `agent-wrapped delete` — self-service erasure
 - [x] OG images
 
 ## Repo / release

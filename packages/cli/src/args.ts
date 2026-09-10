@@ -96,7 +96,7 @@ export function flagString(args: ParsedArgs, name: string): string | undefined {
   return typeof value === "string" ? value : undefined;
 }
 
-export const COMMANDS = ["scan", "render", "login", "publish", "logout"] as const;
+export const COMMANDS = ["scan", "render", "login", "publish", "delete", "logout"] as const;
 export type Command = (typeof COMMANDS)[number];
 
 export function isCommand(value: string): value is Command {

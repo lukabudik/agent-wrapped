@@ -60,11 +60,54 @@ export async function publishStats(stats: WrappedStats, token: string): Promise<
   }
 
   const body = await readJson(res);
-  const username =
-    isObj(body) && typeof body["username"] === "string" ? body["username"] : undefined;
+  // The service keys everything off the GitHub login and returns it as `login`.
+  const username = isObj(body) && typeof body["login"] === "string" ? body["login"] : undefined;
   if (!username) throw networkError("The server accepted the upload but returned no username.");
 
   return { username, profileUrl: `${base}/u/${encodeURIComponent(username)}` };
+}
+
+export interface DeleteResult {
+  /** False when the account had nothing stored, which is still a success. */
+  deleted: boolean;
+  message: string;
+}
+
+/**
+ * Erases the caller's stored snapshot. Identity comes from the token, so this
+ * can only ever delete the account that authorised it.
+ */
+export async function deleteAccount(token: string): Promise<DeleteResult> {
+  const base = apiBase();
+  const res = await fetchWithTimeout(
+    `${base}/api/account`,
+    {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+        "User-Agent": "agent-wrapped",
+      },
+    },
+    base,
+    30_000,
+  );
+
+  if (res.status === 401 || res.status === 403) {
+    throw userError('The stored GitHub token was rejected. Run "agent-wrapped login" again.');
+  }
+  if (!res.ok) {
+    const body = await readJson(res);
+    const detail = isObj(body) && typeof body["error"] === "string" ? `: ${body["error"]}` : "";
+    throw networkError(`Delete failed (HTTP ${res.status})${detail}.`);
+  }
+
+  const body = await readJson(res);
+  return {
+    deleted: isObj(body) && body["deleted"] === true,
+    message:
+      isObj(body) && typeof body["message"] === "string" ? body["message"] : "Stored data removed.",
+  };
 }
 
 export function cardUrl(username: string, theme: Theme, mode?: "dark" | "light"): string {

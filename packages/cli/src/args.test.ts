@@ -9,6 +9,7 @@ import {
   type FlagSpecs,
 } from "./args.js";
 import { CliError } from "./errors.js";
+import { DELETE_FLAGS } from "./commands/delete.js";
 
 const SPECS: FlagSpecs = {
   json: { type: "boolean" },
@@ -83,6 +84,20 @@ test("splitCommand takes a command only from the first token", () => {
     command: "scan",
     rest: ["--username", "login"],
   });
+});
+
+test("splitCommand recognises delete and keeps its flags", () => {
+  assert.deepEqual(splitCommand(["delete"]), { command: "delete", rest: [] });
+  assert.deepEqual(splitCommand(["delete", "--yes"]), { command: "delete", rest: ["--yes"] });
+});
+
+test("delete accepts only --yes", () => {
+  assert.equal(flagBool(parseArgs(["--yes"], DELETE_FLAGS), "yes"), true);
+  assert.equal(flagBool(parseArgs(["-y"], DELETE_FLAGS), "yes"), true);
+  assert.equal(flagBool(parseArgs([], DELETE_FLAGS), "yes"), false);
+  // Deleting is destructive, so an unrecognised flag must fail loudly rather
+  // than being ignored on the way to a delete.
+  assert.throws(() => parseArgs(["--force"], DELETE_FLAGS));
 });
 
 test("splitCommand rejects an unknown command", () => {

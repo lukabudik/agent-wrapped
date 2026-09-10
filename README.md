@@ -8,9 +8,9 @@ Turn your local Claude Code and Codex transcripts into an SVG stats card for you
 
 Like [github-readme-stats](https://github.com/anuraghazra/github-readme-stats), but for the AI coding agent you actually spend your day with. It reads the session logs already sitting on your disk, adds up the tokens, prices them at list API rates, and gives you a card to embed.
 
-For scale, from the author's own logs: **23.79 billion tokens**, worth **$23,691** at list API prices — roughly 17x what the subscription cost over the same period. (That dollar figure is a valuation of the tokens, not a bill anyone received. See [What gets measured](#what-gets-measured).)
+For scale, from the author's own logs: **24.13 billion tokens**, worth **$24,006** at list API prices — roughly 17x what the subscription cost over the same period. (That dollar figure is a valuation of the tokens, not a bill anyone received. See [What gets measured](#what-gets-measured).)
 
-> **Status: pre-release.** The scanner, the pricing model, the redaction layer, and all three card renderers are implemented and covered by tests. The `agent-wrapped` CLI and the hosted service at `agentwrapped.dev` are still being built, so anything below marked _(planned)_ describes intended behavior, not something you can run today. Track progress in [TODO.md](TODO.md).
+> **Status: not launched yet.** The code is built — scanner, pricing, redaction, all three renderers, the CLI, and the web service, with tests. What is missing is everything that makes it public: the package is **not on npm yet**, `agentwrapped.dev` is **not registered yet**, and nothing is deployed. So `npx agent-wrapped` will not resolve, and the card URLs in this README will 404 until the service is live. Until then, run it from a clone (see [Development](#development)). Anything still marked _(planned)_ below is not built at all. Track progress in [TODO.md](TODO.md).
 
 ---
 
@@ -20,19 +20,19 @@ Three themes. Same data, different pitch. All three are pure functions in `packa
 
 ### `heatmap` — a contribution graph for your agent
 
-<img alt="heatmap theme" src="https://agentwrapped.dev/api/card/lukabudik?theme=heatmap&mode=dark" width="860">
+<img alt="heatmap theme" src="preview/heatmap.png" width="860">
 
 880x384. A 53-week grid in the coral ramp, so it reads as a sibling of GitHub's own contribution graph rather than a copy of it. Intensity thresholds are quartiles computed over your **active days only** — using the global maximum would flatten an ordinary week into level 1 the moment one outlier day exists, which is exactly what a heavy agent user's history looks like. Above the grid: a token hero, the dollar valuation, and a stacked bar of your model mix. Below it: sessions, tool calls, subagents spawned, peak hour, and lines added/removed.
 
 ### `wrapped` — the Spotify-Wrapped-style poster
 
-<img alt="wrapped theme" src="https://agentwrapped.dev/api/card/lukabudik?theme=wrapped&mode=dark" width="500">
+<img alt="wrapped theme" src="preview/wrapped.png" width="860">
 
 880x452. A giant token count, the API-equivalent dollar figure, and a physical-scale equivalence line — "roughly N novels of text" — because a raw number at billion scale means nothing to a reader. On the right, a ledger of sessions, turns, tool calls, subagents, active days, longest streak, thinking tokens, and lines written. Below, a 24-bar hour-of-day chart with your peak hour lit in the accent color, plus chips for your top tools.
 
 ### `terminal` — a neofetch-style readout
 
-<img alt="terminal theme" src="https://agentwrapped.dev/api/card/lukabudik?theme=terminal&mode=dark" width="700">
+<img alt="terminal theme" src="preview/terminal.png" width="860">
 
 880x344. A pixel sunburst logo next to monospace leader-dot rows, closed out with a neofetch-style palette strip. The rows are padded in characters rather than positioned in pixels, so the value column stays aligned no matter which font in the stack the viewer actually has.
 
@@ -173,7 +173,11 @@ That prints the exact object `publish` would upload, to stdout, with nothing sen
 npx agent-wrapped delete
 ```
 
-Removes your snapshot and your card from the service. _(planned)_
+This erases your snapshot, your card, and your leaderboard entry. It prints exactly what will go and asks before doing it; pass `--yes` to skip the prompt in a script.
+
+Identity comes from your GitHub token alone — there is no username in the request — so a token can only ever delete its own data. Snapshot and rate-limit rows cascade from the account row, so a single delete is the whole erasure.
+
+Two things it deliberately does not touch: the login stored on your machine, so you can publish again without signing in twice (`agent-wrapped logout` is the command that forgets credentials), and your session logs, which were never uploaded in the first place.
 
 ---
 
@@ -218,15 +222,17 @@ You never have to publish anything. The renderers live in `packages/core` and sh
 # Print a summary table and exit
 npx agent-wrapped
 
-# Render an SVG to disk, no network, no account
-npx agent-wrapped --out card.svg --theme wrapped --mode dark
-
 # Only count activity since a date
 npx agent-wrapped --since 2026-01-01
 
 # Dump the raw aggregate
 npx agent-wrapped --json > stats.json
+
+# Render an SVG to disk, no network, no account
+npx agent-wrapped render --out card.svg --theme wrapped --mode dark
 ```
+
+`render` is its own subcommand, and `--out`/`--theme`/`--mode`/`--username` belong to it rather than to the default scan. The argument parser rejects unknown flags loudly instead of ignoring them, so `agent-wrapped --out card.svg` is an error, not a silent no-op. Defaults: `agent-wrapped.svg`, `heatmap`, `auto`, and your `git config user.name`.
 
 Commit the SVG to your own repo and reference it there if you want a card without a service in the loop at all.
 
@@ -234,9 +240,17 @@ Commit the SVG to your own repo and reference it there if you want a card withou
 
 ## Self-hosting
 
-The web service is a standard Next.js app with Prisma and Postgres, deployable anywhere those run — it is developed against Railway. _(planned: Dockerfile, `railway.json`, and a deployment guide.)_
+The web service is a standard Next.js app with Prisma and Postgres, deployable anywhere those run. It ships with [`apps/web/Dockerfile`](apps/web/Dockerfile) and [`apps/web/railway.json`](apps/web/railway.json); Railway is what it is developed against, but nothing in it is Railway-specific.
 
-The intended shape: set `DATABASE_URL`, register your own GitHub OAuth app for device flow, run the Prisma migrations, deploy, and point the CLI at your instance with an environment variable so nothing goes near `agentwrapped.dev`. Exact variable names will be documented once the CLI and service land.
+Set `DATABASE_URL`, register your own GitHub OAuth app for device flow and set `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`, run the Prisma migrations, and deploy. Then point the CLI at your instance:
+
+```bash
+export AGENT_WRAPPED_API=https://wrapped.example.com
+export AGENT_WRAPPED_CLIENT_ID=<your GitHub OAuth client id>
+npx agent-wrapped publish
+```
+
+Nothing then goes near `agentwrapped.dev`. A step-by-step deployment guide is still to be written _(planned)_.
 
 ---
 

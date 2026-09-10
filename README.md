@@ -240,7 +240,17 @@ Commit the SVG to your own repo and reference it there if you want a card withou
 
 ## Self-hosting
 
-The web service is a standard Next.js app with Prisma and Postgres, deployable anywhere those run. It ships with [`apps/web/Dockerfile`](apps/web/Dockerfile) and [`apps/web/railway.json`](apps/web/railway.json); Railway is what it is developed against, but nothing in it is Railway-specific.
+The web service is a standard Next.js app with Prisma and Postgres, deployable anywhere those run. It ships with [`apps/web/Dockerfile`](apps/web/Dockerfile), which builds from the repository root because the app depends on the `@agent-wrapped/core` workspace package. Railway is what it is developed against, but nothing in it is Railway-specific.
+
+Railway's per-service settings, if you deploy there (its `railway.json` Config-as-Code format is deprecated and stops being read on 2026-12-01, so set these on the service instead):
+
+| Setting | Value |
+|---|---|
+| Dockerfile path | `apps/web/Dockerfile` |
+| Start command | `node apps/web/server.js` |
+| Pre-deploy command | `prisma migrate deploy --schema apps/web/prisma/schema.prisma` |
+| Healthcheck path | `/api/health` |
+| Watch paths | `apps/web/**`, `packages/core/**`, `pnpm-lock.yaml` |
 
 Set `DATABASE_URL`, register your own GitHub OAuth app for device flow and set `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`, run the Prisma migrations, and deploy. Then point the CLI at your instance:
 

@@ -31,8 +31,16 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Build first: the CLI and the web app import @agent-wrapped/core through
+      # its compiled dist/, so on a clean checkout nothing else can type-check
+      # until core has been built. pnpm -r walks the workspace in dependency
+      # order, so core is always first.
+      - run: pnpm build
+
       - run: pnpm typecheck
 
       - run: pnpm test
 
-      - run: pnpm build
+      - run: pnpm lint
+
+      - run: pnpm format:check

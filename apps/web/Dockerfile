@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 # Built from the repository root, not from apps/web: the web app depends on the
 # workspace package @agent-wrapped/core, which lives outside this directory.
 #   docker build -f apps/web/Dockerfile .
@@ -28,8 +26,12 @@ COPY apps/web/package.json apps/web/
 # be present before install. It is small and changes rarely, so copying it here
 # does not meaningfully weaken the cached install layer.
 COPY apps/web/prisma apps/web/prisma
-RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
-    pnpm install --frozen-lockfile
+# Deliberately plain: no BuildKit cache mount and no syntax directive, so this
+# builds identically on any Docker daemon and on hosted builders that do not
+# fetch a BuildKit frontend.
+RUN pnpm install --frozen-lockfile \
+ && pnpm store prune \
+ && rm -rf /root/.cache/pnpm
 
 
 # --- build ------------------------------------------------------------------

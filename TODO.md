@@ -47,12 +47,21 @@ Status legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] Dockerfile + `railway.json`
 - [ ] Publish CLI to npm as `agent-wrapped` (name confirmed available)
 
+## Deployment
+
+- [x] Register `agentwrapped.dev`
+- [x] Create the GitHub repo `lukabudik/agent-wrapped` and push
+- [x] Provision Railway project + Postgres, deploy
+- [x] DNS in Cloudflare: apex + www CNAMEs, null MX, SPF, DMARC, Railway verify TXTs
+- [x] TLS certificate issued for agentwrapped.dev and www
+
 ## Blocked on you
 
-- [ ] Register `agentwrapped.dev` (confirmed available)
-- [ ] Create the GitHub OAuth app, set `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`
-- [ ] Provision Railway project + Postgres, deploy
-- [ ] Create the GitHub repo `lukabudik/agent-wrapped` and push
+- [ ] Create the GitHub OAuth app (device flow on), set `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`
+- [ ] Reconnect the Railway GitHub App to the repo (dashboard shows "GitHub Repo not found",
+      so push-to-deploy is broken; `railway up` still works)
+- [ ] Discard the stale staged patch in the Railway canvas (it would delete DATABASE_URL)
+- [ ] `npm publish` so `npx agent-wrapped` resolves
 
 ## Deferred (post-launch)
 

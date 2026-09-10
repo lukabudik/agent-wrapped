@@ -1,0 +1,45 @@
+name: Feature request
+description: Propose a stat, a theme, or a capability.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is missing
+      description: Describe the gap, not the solution. What can't you do today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you'd build
+      description: Roughly how it would work, and where it would live in the repo.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Data impact
+      description: |
+        The project's one hard rule is that only aggregates leave a machine, and that
+        tool and skill names are redacted by default. Anything that changes what gets
+        uploaded needs a much stronger case than anything that doesn't.
+      options:
+        - label: This would add or widen a field in the uploaded payload
+        - label: This would change what `safe` redaction mode publishes
+        - label: This needs no new data to leave the machine
+
+  - type: textarea
+    id: justification
+    attributes:
+      label: If you ticked either of the first two boxes
+      description: Explain why the new data cannot identify a person, an employer, or a repo.
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      options:
+        - label: I'm willing to open a PR for this

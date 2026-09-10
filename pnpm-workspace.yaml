@@ -1,0 +1,14 @@
+packages:
+  - "packages/*"
+  - "apps/*"
+
+# These ship prebuilt native binaries or generate code, so their install
+# scripts have to run: esbuild backs tsx (which runs the TypeScript test
+# files), unrs-resolver backs the ESLint import resolver, and Prisma fetches
+# its query engine and generates the client.
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true
+  prisma: true
+  "@prisma/client": true
+  "@prisma/engines": true

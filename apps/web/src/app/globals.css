@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+/*
+ * Tokens are the exact dark palette the SVG cards render with
+ * (packages/core/src/render/common.ts), so a card embedded on the page sits
+ * flush against its surroundings instead of looking pasted on. The site is
+ * dark-only on purpose: the cards themselves carry the light variant for
+ * READMEs, but the marketing surface has one look.
+ */
+@theme {
+  --color-canvas: #0d1117;
+  --color-panel: #161b22;
+  --color-edge: #30363d;
+  --color-ink: #e6edf3;
+  --color-dim: #8b949e;
+  --color-faint: #484f58;
+  --color-coral: #ef7a52;
+  --color-coral-soft: #d97757;
+
+  --color-ramp-0: #161b22;
+  --color-ramp-1: #4a2118;
+  --color-ramp-2: #7d3826;
+  --color-ramp-3: #b85337;
+  --color-ramp-4: #ef7a52;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-coral) 35%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-coral);
+    outline-offset: 2px;
+  }
+}
+
+@utility panel {
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-edge);
+  background-color: var(--color-panel);
+}

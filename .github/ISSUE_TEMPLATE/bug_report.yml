@@ -1,0 +1,72 @@
+name: Bug report
+description: Something is broken, miscounted, or rendered wrong.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If this is a data leak, a redaction bypass, or anything else where private
+        information escaped a machine, stop and file a
+        [private advisory](https://github.com/lukabudik/agent-wrapped/security/advisories/new)
+        instead.
+
+        **Do not paste raw transcript lines.** They contain your prompts and file paths.
+        Redact before pasting, or describe the shape of the line instead.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where is it
+      options:
+        - CLI (npx agent-wrapped)
+        - Scanner / token counts
+        - Pricing / dollar figure
+        - Card rendering (SVG)
+        - Web service (agentwrapped.dev)
+        - Something else
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you expected, and what you got instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: The exact command you ran, and what it printed. Redact anything private.
+      render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `npx agent-wrapped --version`, or the commit you built from.
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: OS and Node version
+      placeholder: macOS 15.2, Node 24.15.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: agents
+    attributes:
+      label: Which transcripts are on this machine
+      multiple: true
+      options:
+        - Claude Code (~/.claude/projects)
+        - Codex (~/.codex/sessions)
+    validations:
+      required: true

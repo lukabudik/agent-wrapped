@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Privacy or security issue
+    url: https://github.com/lukabudik/agent-wrapped/security/advisories/new
+    about: Data leaks, redaction bypasses, and credential handling go through a private advisory, never a public issue.
+  - name: Delete my published data
+    url: https://github.com/lukabudik/agent-wrapped/issues/new?labels=data-deletion&title=Data+deletion+request
+    about: Ask for your snapshot and card to be removed from the hosted service.

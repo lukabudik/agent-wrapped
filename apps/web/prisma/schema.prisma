@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// A GitHub account that has published at least once.
+model User {
+  id String @id @default(cuid())
+
+  /// GitHub's numeric account id, as a string. This is the stable identity —
+  /// logins can be renamed and reused, ids cannot.
+  githubId String @unique
+
+  /// Always stored lowercase so /u/Luka and /u/luka resolve to the same row
+  /// without needing a citext extension or a case-insensitive index.
+  login     String  @unique
+  name      String?
+  avatarUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  snapshot Snapshot?
+  quota    PublishQuota?
+
+  @@map("users")
+}
+
+/// The current published stats for a user. Publishing replaces the row rather
+/// than appending, so there is exactly one snapshot per user at any time.
+model Snapshot {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// The full WrappedStats wire format, validated on the way in.
+  stats Json
+
+  /// Denormalised copies of the leaderboard sort keys. Reading them out of the
+  /// JSON column would mean either a functional index per key or a sort in
+  /// application code; plain columns keep the leaderboard a single indexed scan.
+  totalTokens      BigInt
+  apiEquivalentUsd Decimal  @db.Decimal(14, 4)
+  activeDays       Int
+  currentStreak    Int
+  linesAdded       Int
+  agents           String[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId])
+  @@index([totalTokens(sort: Desc), id])
+  @@index([apiEquivalentUsd(sort: Desc), id])
+  @@index([currentStreak(sort: Desc), id])
+  @@index([activeDays(sort: Desc), id])
+  @@map("snapshots")
+}
+
+/// Fixed-window publish counter. A row per user, reset lazily when the window
+/// it holds has expired — no background job, no Redis.
+model PublishQuota {
+  userId String @id
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  windowStart DateTime
+  count       Int      @default(0)
+
+  @@map("publish_quotas")
+}

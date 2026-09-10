@@ -1,0 +1,37 @@
+{
+  "name": "agent-wrapped",
+  "version": "0.1.0",
+  "description": "Turn your local Claude Code and Codex session logs into a shareable stats card.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "agent-wrapped": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "codex",
+    "stats",
+    "readme",
+    "wrapped"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "tsc -p tsconfig.json && node --test dist/*.test.js"
+  },
+  "dependencies": {
+    "@agent-wrapped/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "@types/node": "^22.10.2"
+  }
+}

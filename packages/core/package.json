@@ -1,6 +1,26 @@
 {
   "name": "@agent-wrapped/core",
   "version": "0.1.0",
+  "description": "Scan Claude Code and Codex session logs and render them as SVG stats cards.",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "codex",
+    "stats",
+    "svg",
+    "wrapped"
+  ],
+  "author": "Luka Budik (https://github.com/lukabudik)",
+  "license": "MIT",
+  "homepage": "https://agentwrapped.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukabudik/agent-wrapped.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/lukabudik/agent-wrapped/issues"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

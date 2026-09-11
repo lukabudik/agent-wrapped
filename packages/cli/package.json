@@ -24,14 +24,25 @@
     "wrapped"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "test": "tsc -p tsconfig.json && node --test dist/*.test.js"
+    "build": "tsc -p tsconfig.build.json",
+    "test": "node --import tsx --test src/*.test.ts"
   },
   "dependencies": {
     "@agent-wrapped/core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.2",
-    "@types/node": "^22.10.2"
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2"
+  },
+  "author": "Luka Budik (https://github.com/lukabudik)",
+  "homepage": "https://agentwrapped.dev",
+  "bugs": {
+    "url": "https://github.com/lukabudik/agent-wrapped/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukabudik/agent-wrapped.git",
+    "directory": "packages/cli"
   }
 }

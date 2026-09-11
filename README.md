@@ -244,13 +244,13 @@ The web service is a standard Next.js app with Prisma and Postgres, deployable a
 
 Railway's per-service settings, if you deploy there (its `railway.json` Config-as-Code format is deprecated and stops being read on 2026-12-01, so set these on the service instead):
 
-| Setting | Value |
-|---|---|
-| Dockerfile path | `apps/web/Dockerfile` |
-| Start command | `node apps/web/server.js` |
+| Setting            | Value                                                          |
+| ------------------ | -------------------------------------------------------------- |
+| Dockerfile path    | `apps/web/Dockerfile`                                          |
+| Start command      | `node apps/web/server.js`                                      |
 | Pre-deploy command | `prisma migrate deploy --schema apps/web/prisma/schema.prisma` |
-| Healthcheck path | `/api/health` |
-| Watch paths | `apps/web/**`, `packages/core/**`, `pnpm-lock.yaml` |
+| Healthcheck path   | `/api/health`                                                  |
+| Watch paths        | `apps/web/**`, `packages/core/**`, `pnpm-lock.yaml`            |
 
 Set `DATABASE_URL`, register your own GitHub OAuth app for device flow and set `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`, run the Prisma migrations, and deploy. Then point the CLI at your instance:
 

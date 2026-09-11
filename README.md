@@ -10,7 +10,7 @@ Like [github-readme-stats](https://github.com/anuraghazra/github-readme-stats), 
 
 For scale, from the author's own logs: **24.13 billion tokens**, worth **$24,006** at list API prices — roughly 17x what the subscription cost over the same period. (That dollar figure is a valuation of the tokens, not a bill anyone received. See [What gets measured](#what-gets-measured).)
 
-> **Status: not launched yet.** The code is built — scanner, pricing, redaction, all three renderers, the CLI, and the web service, with tests. What is missing is everything that makes it public: the package is **not on npm yet**, `agentwrapped.dev` is **not registered yet**, and nothing is deployed. So `npx agent-wrapped` will not resolve, and the card URLs in this README will 404 until the service is live. Until then, run it from a clone (see [Development](#development)). Anything still marked _(planned)_ below is not built at all. Track progress in [TODO.md](TODO.md).
+> **Status: live, not yet on npm.** The service is running at [agentwrapped.dev](https://agentwrapped.dev) and the cards above are real. The npm package is not published yet, so `npx agent-wrapped` does not resolve — use the [single-file download](#install) below, which needs nothing but Node. Anything marked _(planned)_ is not built. Track progress in [TODO.md](TODO.md).
 
 ---
 
@@ -44,18 +44,29 @@ Every theme takes `mode=dark`, `mode=light`, or `mode=auto`.
 
 ---
 
+## Install
+
+One file, no dependencies, no install step. Node 20+ is the only requirement:
+
+```bash
+curl -fsSL https://github.com/lukabudik/agent-wrapped/releases/latest/download/agent-wrapped.mjs -o agent-wrapped.mjs
+node agent-wrapped.mjs
+```
+
+Once the npm package is published this becomes `npx agent-wrapped`; the bundled file will keep working either way.
+
 ## Quick start
 
 See your stats, locally, without an account or a network call:
 
 ```bash
-npx agent-wrapped
+node agent-wrapped.mjs
 ```
 
 Happy with them? Put the card on your profile:
 
 ```bash
-npx agent-wrapped publish
+node agent-wrapped.mjs publish
 ```
 
 `publish` walks you through a GitHub device-flow login, shows you the exact JSON it is about to upload, waits for you to confirm, and then prints the markdown snippet to paste into your profile README.

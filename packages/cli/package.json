@@ -25,7 +25,8 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "test": "node --import tsx --test src/*.test.ts"
+    "test": "node --import tsx --test src/*.test.ts",
+    "bundle": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --define:__AGENT_WRAPPED_VERSION__=\"\\\"$npm_package_version\\\"\" --outfile=dist/agent-wrapped.mjs"
   },
   "dependencies": {
     "@agent-wrapped/core": "workspace:*"
@@ -33,7 +34,8 @@
   "devDependencies": {
     "typescript": "^5.7.2",
     "@types/node": "^22.10.2",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "esbuild": "^0.24.0"
   },
   "author": "Luka Budik (https://github.com/lukabudik)",
   "homepage": "https://agentwrapped.dev",

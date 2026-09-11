@@ -51,7 +51,14 @@ const HELP = `
   and it asks first.
 `;
 
+/**
+ * Replaced at bundle time by esbuild's --define. The single-file build has no
+ * package.json beside it to read, so without this `--version` reports unknown.
+ */
+declare const __AGENT_WRAPPED_VERSION__: string | undefined;
+
 function version(): string {
+  if (typeof __AGENT_WRAPPED_VERSION__ === "string") return __AGENT_WRAPPED_VERSION__;
   try {
     const here = dirname(fileURLToPath(import.meta.url));
     const parsed: unknown = JSON.parse(readFileSync(join(here, "..", "package.json"), "utf8"));

@@ -61,7 +61,10 @@ Status legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [ ] Reconnect the Railway GitHub App to the repo (dashboard shows "GitHub Repo not found",
       so push-to-deploy is broken; `railway up` still works)
 - [ ] Discard the stale staged patch in the Railway canvas (it would delete DATABASE_URL)
-- [ ] `npm publish` so `npx agent-wrapped` resolves
+- [x] Ship a single-file bundle as a GitHub release (works without npm)
+- [ ] `npm publish` so `npx agent-wrapped` resolves — BLOCKED: npm account locked
+      behind 2FA recovery. Both names confirmed free; needs `npm login` plus a
+      free npm org for the `@agent-wrapped` scope once the account is back.
 
 ## Deferred (post-launch)
 
